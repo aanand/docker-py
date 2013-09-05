@@ -11,7 +11,7 @@ setup(
     version='0.1.5',
     description="Python client for Docker.",
     packages=['docker'],
-    install_requires=['requests', 'six'] + test_requirements,
+    install_requires=['requests', 'six', 'websocket-client'] + test_requirements,
     zip_safe=False,
     test_suite='tests',
     classifiers=['Development Status :: 3 - Alpha',
