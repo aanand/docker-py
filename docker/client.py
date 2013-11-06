@@ -113,6 +113,7 @@ class Client(requests.Session):
             'User':         user,
             'Tty':          tty,
             'OpenStdin':    stdin_open,
+            'StdinOnce':    stdin_open and attach_stdin,
             'Memory':       mem_limit,
             'AttachStdin':  attach_stdin,
             'AttachStdout': attach_stdout,
