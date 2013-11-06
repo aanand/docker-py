@@ -8,7 +8,7 @@ SOURCE_DIR = os.path.join(ROOT_DIR)
 test_requirements = []
 setup(
     name="docker-py",
-    version='0.2.0-orchard',
+    version='0.2.0-orchard1',
     description="Python client for Docker.",
     packages=['docker'],
     install_requires=['requests', 'six', 'websocket-client'] + test_requirements,
