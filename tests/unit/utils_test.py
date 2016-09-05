@@ -13,7 +13,7 @@ import unittest
 import pytest
 import six
 
-from docker.client import Client
+from docker.api.client import APIClient
 from docker.constants import DEFAULT_DOCKER_API_VERSION
 from docker.errors import DockerException, InvalidVersion
 from docker.utils import (
@@ -45,7 +45,7 @@ class DecoratorsTest(unittest.TestCase):
         def f(self, headers=None):
             return headers
 
-        client = Client()
+        client = APIClient()
         client._auth_configs = {}
 
         g = update_headers(f)
@@ -292,7 +292,7 @@ class KwargsFromEnvTest(unittest.TestCase):
         self.assertEqual(False, kwargs['tls'].assert_hostname)
         self.assertTrue(kwargs['tls'].verify)
         try:
-            client = Client(**kwargs)
+            client = APIClient(**kwargs)
             self.assertEqual(kwargs['base_url'], client.base_url)
             self.assertEqual(kwargs['tls'].ca_cert, client.verify)
             self.assertEqual(kwargs['tls'].cert, client.cert)
@@ -311,7 +311,7 @@ class KwargsFromEnvTest(unittest.TestCase):
         self.assertEqual(True, kwargs['tls'].assert_hostname)
         self.assertEqual(False, kwargs['tls'].verify)
         try:
-            client = Client(**kwargs)
+            client = APIClient(**kwargs)
             self.assertEqual(kwargs['base_url'], client.base_url)
             self.assertEqual(kwargs['tls'].cert, client.cert)
             self.assertFalse(kwargs['tls'].verify)
