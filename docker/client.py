@@ -17,8 +17,7 @@ class Client(object):
         Return a client configured with the standard set of Docker environment
         variables. For example, `DOCKER_HOST`, `DOCKER_CERT_PATH`, etc.
         """
-        version = kwargs.pop('version', None)
-        return cls(version=version, **kwargs_from_env(**kwargs))
+        return cls(**kwargs_from_env(**kwargs))
 
     # Resources
     @property
