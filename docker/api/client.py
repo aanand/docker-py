@@ -19,7 +19,8 @@ from .volume import VolumeApiMixin
 from ..constants import (DEFAULT_TIMEOUT_SECONDS, DEFAULT_USER_AGENT,
                          IS_WINDOWS_PLATFORM, DEFAULT_DOCKER_API_VERSION,
                          STREAM_HEADER_SIZE_BYTES, DEFAULT_NUM_POOLS)
-from ..errors import DockerException, APIError, TLSParameterError, NotFound
+from ..errors import (DockerException, APIError, TLSParameterError, NotFound,
+                      ImageNotFound)
 from ..auth import auth
 from ..ssladapter import ssladapter
 from ..tls import TLSConfig
@@ -174,9 +175,13 @@ class APIClient(
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:
+            cls = APIError
             if e.response.status_code == 404:
-                raise NotFound(e, response, explanation=explanation)
-            raise APIError(e, response, explanation=explanation)
+                if explanation and 'No such image' in str(self.explanation):
+                    cls = ImageNotFound
+                else:
+                    cls = NotFound
+            raise cls(e, response, explanation=explanation)
 
     def _result(self, response, json=False, binary=False):
         assert not (json and binary)

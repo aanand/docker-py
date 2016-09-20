@@ -17,7 +17,7 @@ def setup_test_session():
     c = docker.APIClient(**kwargs_from_env())
     try:
         c.inspect_image(BUSYBOX)
-    except docker.errors.NotFound:
+    except docker.errors.ImageNotFound:
         print("\npulling {0}".format(BUSYBOX), file=sys.stderr)
         for data in c.pull(BUSYBOX, stream=True):
             data = json.loads(data.decode('utf-8'))
