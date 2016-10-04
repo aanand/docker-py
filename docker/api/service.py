@@ -9,6 +9,25 @@ class ServiceApiMixin(object):
             self, task_template, name=None, labels=None, mode=None,
             update_config=None, networks=None, endpoint_config=None
     ):
+        """
+        Create a service, similar to the ``docker service create`` command. See
+        :doc:`services` for details.
+
+        Args:
+            task_template (TaskTemplate): Specification of the task to start as
+                part of the new service.
+            name (string): User-defined name for the service.
+            labels (dict): A map of labels to associate with the service.
+            mode (string): Scheduling mode for the service (`replicated` or
+                `global`). Defaults to `replicated`.
+            update_config (UpdateConfig): Specification for the update strategy
+                of the service.
+            networks (list): List of network names or IDs to attach the service
+                to.
+            endpoint_config (dict): Properties that can be configured to access
+                and load balance a service.
+        """
+
         url = self._url('/services/create')
         headers = {}
         image = task_template.get('ContainerSpec', {}).get('Image', None)
@@ -74,6 +93,25 @@ class ServiceApiMixin(object):
     def update_service(self, service, version, task_template=None, name=None,
                        labels=None, mode=None, update_config=None,
                        networks=None, endpoint_config=None):
+        """
+        Update a service.
+
+        Args:
+            service (string): A service identifier (either its name or ID).
+            version (int): The version number of the service object being
+                updated. This is required to avoid conflicting writes.
+            task_template (TaskTemplate): New task specification.
+            name (string): New name for the service.
+            labels (dict): A map of labels to associate with the service.
+            mode (string): Scheduling mode for the service (`replicated` or
+                `global`). Defaults to `replicated`.
+            update_config (UpdateConfig): Specification for the update strategy
+                of the service.
+            networks (list): List of network names or IDs to attach the service
+                to.
+            endpoint_config (dict): Properties that can be configured to access
+                and load balance a service.
+        """
         url = self._url('/services/{0}/update', service)
         data = {}
         headers = {}

@@ -64,6 +64,8 @@ Either the service name or service ID can be used as argument.
 client.remove_service('my_service_name')
 ```
 
+<!-- TODO: remove this -->
+
 ## Service API documentation
 
 ### Client.create_service

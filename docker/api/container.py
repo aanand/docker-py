@@ -153,6 +153,18 @@ class ContainerApiMixin(object):
 
         Returns:
             A list of dicts, one per container
+
+        Example:
+            >>> from docker import Client
+            >>> cli = Client(base_url='tcp://127.0.0.1:2375')
+            >>> cli.containers()
+            [{'Command': '/bin/sleep 30',
+              'Created': 1412574844,
+              'Id': '6e276c9e6e5759e12a6a9214efec6439f80b4f37618e1a6547f28a3da34db07a',
+              'Image': 'busybox:buildroot-2014.02',
+              'Names': ['/grave_mayer'],
+              'Ports': [],
+              'Status': 'Up 1 seconds'}]
         """
         params = {
             'limit': 1 if latest else limit,
@@ -176,6 +188,19 @@ class ContainerApiMixin(object):
 
     @utils.check_resource
     def copy(self, container, resource):
+        """
+        Identical to the ``docker cp`` command. Get files/folders from the container.
+
+        Deprecated for API version >= 1.20 - consider using
+        :py:meth:`~docker.api.client.ContainerApiMixin.get_archive` instead.
+
+        Args:
+            container (str): The container to copy from
+            resource (str): The path within the container
+
+        Returns:
+            The contents of the file as a string
+        """
         if utils.version_gte(self._version, '1.20'):
             warnings.warn(
                 'Client.copy() is deprecated for API version >= 1.20, '
@@ -199,6 +224,75 @@ class ContainerApiMixin(object):
                          memswap_limit=None, cpuset=None, host_config=None,
                          mac_address=None, labels=None, volume_driver=None,
                          stop_signal=None, networking_config=None):
+
+        """
+        Creates a container that can then be
+        :py:meth:`~docker.api.client.ContainerApiMixin.start`-ed. Parameters are
+        similar to those for the ``docker run`` command, except it doesn't
+        support the attach options (``-a``).
+
+        See :doc:`port-bindings` and :doc:`volumes` for more information on how
+        to create port bindings and volume mappings.
+
+        Args:
+            image (str): The image to run
+            command (str or list): The command to be run in the container
+            hostname (str): Optional hostname for the container
+            user (str or int): Username or UID
+            detach (bool): Detached mode
+            stdin_open (bool): Keep STDIN open even if not attached
+            tty (bool): Allocate a pseudo-TTY
+            mem_limit (number or str): Memory limit.
+                Accepts a number (which represents the memory limit of the
+                created container in bytes) or a string with a units
+                identification char ('100000b', '1000k', '128m', '1g'). If a
+                string is specified without a units character, the intended unit
+                is assumed to be bytes.
+            ports (list of ints): A list of port numbers
+            environment (dict or list): A dictionary or a list of strings in the
+                format ``["PASSWORD=xxx"]`` or ``{"PASSWORD": "xxx"}``
+            dns (list): DNS name servers
+            dns_opt (list): Additional options to be added to the container's
+                ``resolv.conf`` file
+            volumes (str or list):
+            volumes_from (str or list): List of container names or ids to get
+                volumes from, or a single string joining container ids with
+                commas
+            network_disabled (bool): Disable networking
+            name (str): A name for the container
+            entrypoint (str or list): An entrypoint
+            working_dir (str): Path to the working directory
+            domainname (str or list): Set custom DNS search domains
+            memswap_limit (int):
+            host_config (dict): A :doc:`HostConfig <hostconfig>` dictionary
+            mac_address (str): The Mac Address to assign the container
+            labels (dict or list): A dictionary of name-value labels (e.g.
+                ``{"label1": "value1", "label2": "value2"}``) or a list of names
+                of labels to set with empty values (e.g.
+                ``["label1", "label2"]``)
+            volume_driver (str): The name of a volume driver/plugin.
+            stop_signal (str): The stop signal to use to stop the container
+                (e.g. ``SIGINT``).
+            networking_config (dict): A :doc:`NetworkingConfig <networks>`
+                dictionary
+
+        Raises:
+            TypeError: ``volumes_from`` and ``dns`` arguments raise TypeError if
+                they are used against v1.10 and above of the Docker remote API.
+                Those arguments should be passed as part of the ``host_config``
+                dictionary.
+
+        Returns:
+            A dictionary with an ``Id`` key and a ``Warnings`` key.
+
+        Example:
+            >>> from docker import Client
+            >>> cli = Client(base_url='tcp://127.0.0.1:2375')
+            >>> container = cli.create_container(image='busybox:latest', command='/bin/sleep 30')
+            >>> print(container)
+            {'Id': '8a61192da2b3bb2d922875585e29b74ec0dc4e0117fcbf84c962204e97564cd7',
+             'Warnings': None}
+        """
 
         if isinstance(volumes, six.string_types):
             volumes = [volumes, ]

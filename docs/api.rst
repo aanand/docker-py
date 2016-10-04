@@ -76,3 +76,10 @@ The Docker daemon
 .. autoclass:: docker.api.client.DaemonApiMixin
   :members:
   :undoc-members:
+
+Auxiliary types
+---------------
+
+.. autoclass :: docker.types.services.TaskTemplate
+
+.. autoclass :: docker.types.services.UpdateConfig

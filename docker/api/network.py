@@ -24,6 +24,25 @@ class NetworkApiMixin(object):
     def create_network(self, name, driver=None, options=None, ipam=None,
                        check_duplicate=None, internal=False, labels=None,
                        enable_ipv6=False):
+        """
+        Create a network, similar to the `docker network create` command. See
+        :doc:`networks` for details.
+
+        Args:
+            name (str): Name of the network
+            driver (str): Name of the driver used to create the network
+            options (dict): Driver options as a key-value dictionary
+            ipam (dict): Optional custom IP scheme for the network
+            check_duplicate (bool): Instruct daemon to check for networks with
+                same name, and return an error if one is found.
+            internal (bool): Restrict external access to the network.
+            labels (dict): Map of labels to set on the network.
+            enable_ipv6 (bool): Enable IPv6 on the network.
+
+        Returns:
+            A dictionary representing the created network
+        """
+
         if options is not None and not isinstance(options, dict):
             raise TypeError('options must be a dictionary')
 
@@ -79,6 +98,24 @@ class NetworkApiMixin(object):
                                      ipv4_address=None, ipv6_address=None,
                                      aliases=None, links=None,
                                      link_local_ips=None):
+        """
+        Analogous to ``docker network connect``.
+
+        Args:
+            container (str): container-id/name to be connected to the network
+            net_id (str): network id
+            aliases (list): A list of aliases for this endpoint. Names in that
+                list can be used within the network to reach the container.
+            links (list): A list of links for this endpoint. Containers declared
+                in this list will be
+                `linked <https://docs.docker.com/engine/userguide/networking/work-with-networks/#linking-containers-in-user-defined-networks>`_
+                to this container.
+            ipv4_address (str): The IP address of this container on the network,
+                using the IPv4 protocol.
+            ipv6_address (str): The IP address of this container on the network,
+                using the IPv6 protocol.
+            link_local_ips (list): A list of link-local (IPv4/IPv6) addresses.
+        """
         data = {
             "Container": container,
             "EndpointConfig": self.create_endpoint_config(
